@@ -9,11 +9,14 @@
     <body>
         <h1>Algorithms Pathfinder Visualizer</h1>
 
-        <!-- Container for graph nodes (buttons) -->
-        <div id="graphContainer">
-            <!-- SVG container for edges -->
-            <svg id="graphSvg"></svg>
-        </div>
+        <!-- SVG container for edges and nodes -->
+        <svg id="graphSvg">
+            <!-- Group for edges (lines) -->
+            <g id="edges"></g>
+            
+            <!-- Group for nodes (circles) -->
+            <g id="nodes"></g>
+        </svg>
 
         <!-- Load the main JavaScript file -->
         <script type="module" src="main.js"></script>

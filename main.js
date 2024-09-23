@@ -5,12 +5,12 @@ import { Graph } from './Graph.js';
 // Create a new graph
 const graph = new Graph();
 
-// Initialize the graph on the SVG and container for buttons
-graph.init('graphSvg', 'graphContainer');
+// Initialize the graph on the SVG
+graph.init('graphSvg');  // Removed 'graphContainer' because we no longer need it for buttons
 
 // Grid settings
-const gridRows = 5;  // Number of rows in the grid
-const gridCols = 10;  // Number of columns in the grid
+const gridRows = 6;  // Number of rows in the grid
+const gridCols = 14;  // Number of columns in the grid
 const nodeSpacing = 100;  // Spacing between nodes
 
 // Function to create the grid of nodes
@@ -24,7 +24,7 @@ function createGrid() {
             const x = col * nodeSpacing + 50;  // Adjust horizontal position
             const y = row * nodeSpacing + 50;  // Adjust vertical position
 
-            // Add the node to the graph
+            // Add the node to the graph (now using <circle> for the node)
             graph.addNode(new Node(nodeId, x, y));
 
             // Add edges to neighboring nodes

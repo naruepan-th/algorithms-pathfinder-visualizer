@@ -5,115 +5,118 @@ export class Graph {
     constructor() {
         this.nodes = {}; // To store nodes by their ID
         this.adjacencyList = new Map(); // Private adjacency list
-        this.svg = null; // SVG element for edges
-        this.graphContainer = null; // Container for buttons and svg element
+        this.edgeElements = new Map(); //Private storage of all edges
+        this.svg = null; // SVG element for edges and nodes
+        this.graphContainer = null; // Container for svg element
         this.containerRect = null; // absolute positioning of graphContainer in DOM
     }
 
-    // Initialize the graph with SVG and container for buttons
-    init(svgId, containerId) {
-        this.svg = document.getElementById(svgId); // SVG for edges
-        this.graphContainer = document.getElementById(containerId); // Container for buttons
+    // Initialize the graph with SVG container
+    init(svgId) {
+        this.svg = document.getElementById(svgId); // SVG for edges and nodes
     }
 
-    // Add a node (button) to the graph
+    // Add a node (SVG <circle>) to the graph
     addNode(node) {
         if (!this.nodes[node.id]) {
             this.nodes[node.id] = node;
             this.adjacencyList.set(node.id, []); // Initialize adjacency list for the node
 
-            // Create the button element for the node
-            const nodeButton = document.createElement('button');
-            nodeButton.classList.add('node');
-            nodeButton.id = node.id;
-            nodeButton.style.left = `${node.x}px`;
-            nodeButton.style.top = `${node.y}px`;
-            nodeButton.innerText = node.id;
+            // Create the SVG circle element for the node
+            const nodeCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            nodeCircle.classList.add('node');
+            nodeCircle.setAttribute('id', node.id);
+            nodeCircle.setAttribute('cx', node.x); // X position
+            nodeCircle.setAttribute('cy', node.y); // Y position
+            nodeCircle.setAttribute('r', 20); // Radius of the circle
+            nodeCircle.setAttribute('fill', 'blue'); // Fill color for the node
 
             // Add event listeners for dragging
-            nodeButton.addEventListener('mousedown', this.handleMouseDown.bind(this, node));
+            nodeCircle.addEventListener('mousedown', this.handleMouseDown.bind(this, node));
             document.addEventListener('mouseup', this.handleMouseUp.bind(this));
             document.addEventListener('mousemove', this.handleMouseMove.bind(this));
 
-            // Append the button to the container
-            this.graphContainer.appendChild(nodeButton);
+            // Append the circle to the SVG
+            // Append the circle to the nodes group (so it's on top of the edges)
+            this.svg.querySelector('#nodes').appendChild(nodeCircle);
         }
     }
 
-    // Add an edge between two nodes based on their physical distance
     addEdge(node1Id, node2Id) {
         const node1 = this.nodes[node1Id];
         const node2 = this.nodes[node2Id];
-
+    
         if (node1 && node2) {
             const distance = node1.getDistanceTo(node2); // Calculate weight based on distance
             this.adjacencyList.get(node1Id).push({ node: node2Id, weight: distance });
             this.adjacencyList.get(node2Id).push({ node: node1Id, weight: distance }); // Bidirectional
-
-            // Draw the edge in the SVG
-            this.drawEdge(node1Id, node2Id);
+    
+            // Draw the edge in the SVG (store in the edgeElements map)
+            const edgeId1 = `${node1Id}-${node2Id}`;
+            const edgeId2 = `${node2Id}-${node1Id}`;
+            const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            line.setAttribute("x1", node1.x);
+            line.setAttribute("y1", node1.y);
+            line.setAttribute("x2", node2.x);
+            line.setAttribute("y2", node2.y);
+            line.setAttribute("stroke", "black");
+    
+            // Store the edge in the map for later updates
+            this.edgeElements.set(edgeId1, line);
+            this.edgeElements.set(edgeId2, line);
+    
+            // Append the line to the SVG
+            // Append the line to the edges group (so it's behind the circles)
+            this.svg.querySelector("#edges").appendChild(line);
         }
     }
 
-    // Draw an edge between two nodes in the SVG
-    drawEdge(node1Id, node2Id) {
-        const node1 = this.nodes[node1Id];
-        const node2 = this.nodes[node2Id];
-
-        // Create an SVG line element
-        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        line.setAttribute("x1", node1.x); // Offset to center of the node
-        line.setAttribute("y1", node1.y);
-        line.setAttribute("x2", node2.x);
-        line.setAttribute("y2", node2.y);
-        line.setAttribute("stroke", "black");
-
-        // Append the line to the SVG
-        this.svg.appendChild(line);
-    }
-
-    // Redraw the edges after node movement
-    redrawEdges() {
-        // Clear existing SVG lines
-        while (this.svg.firstChild) {
-            this.svg.removeChild(this.svg.firstChild);
+    updateEdgePosition(node1Id, node2Id) {
+        const edgeId = `${node1Id}-${node2Id}`;
+        const line = this.edgeElements.get(edgeId);
+    
+        if (line) {
+            const node1 = this.nodes[node1Id];
+            const node2 = this.nodes[node2Id];
+    
+            // Update the positions of the edge without re-creating the element
+            line.setAttribute("x1", node1.x);
+            line.setAttribute("y1", node1.y);
+            line.setAttribute("x2", node2.x);
+            line.setAttribute("y2", node2.y);
         }
-
-        // Redraw all edges
-        this.adjacencyList.forEach((edges, nodeId) => {
-            edges.forEach(edge => {
-                this.drawEdge(nodeId, edge.node);
-            });
-        });
     }
+    
 
     // Handle mouse down event (start dragging)
     handleMouseDown(node, event) {
         node.isDragging = true;
-        this.containerRect = this.graphContainer.getBoundingClientRect();
+        this.containerRect = this.svg.getBoundingClientRect(); // Get SVG container's bounding box
     }
 
     // Handle mouse move event (dragging)
     handleMouseMove(event) {
         Object.values(this.nodes).forEach(node => {
             if (node.isDragging) {
-                
                 const mouseX = event.clientX - this.containerRect.left;
                 const mouseY = event.clientY - this.containerRect.top;
-
+    
                 // Update node position
                 node.updatePosition(mouseX, mouseY);
-
-                // Update button position
-                const nodeButton = document.getElementById(node.id);
-                nodeButton.style.left = `${node.x}px`;
-                nodeButton.style.top = `${node.y}px`;
-
-                // Redraw edges with updated node positions
-                this.redrawEdges();
+    
+                // Update circle position using 'cx' and 'cy'
+                const nodeCircle = document.getElementById(node.id);
+                nodeCircle.setAttribute('cx', node.x);
+                nodeCircle.setAttribute('cy', node.y);
+    
+                // Update only the edges connected to the node
+                this.adjacencyList.get(node.id).forEach(edge => {
+                    this.updateEdgePosition(node.id, edge.node);
+                });
             }
         });
     }
+    
 
     // Handle mouse up event (stop dragging)
     handleMouseUp() {
