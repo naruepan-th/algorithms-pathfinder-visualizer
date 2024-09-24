@@ -9,7 +9,7 @@ const graph = new Graph();
 graph.init('graphSvg');
 
 // Grid settings
-const gridRows = 10;  // Number of rows in the grid
+const gridRows = 8;  // Number of rows in the grid
 const gridCols = 20;  // Number of columns in the grid
 const nodeRadius = 10; // radius of a node
 
