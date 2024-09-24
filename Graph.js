@@ -28,7 +28,7 @@ export class Graph {
             nodeCircle.setAttribute('id', node.id);
             nodeCircle.setAttribute('cx', node.x); // X position
             nodeCircle.setAttribute('cy', node.y); // Y position
-            nodeCircle.setAttribute('r', 20); // Radius of the circle
+            nodeCircle.setAttribute('r', 10); // Radius of the circle
             nodeCircle.setAttribute('fill', 'blue'); // Fill color for the node
 
             // Add event listeners for dragging
