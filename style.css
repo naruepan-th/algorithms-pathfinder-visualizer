@@ -3,12 +3,27 @@ line {
     stroke-width: 4;        /* Line thickness */
 }
 
-/* Style for the nodes (SVG <circle>) */
-.node {
+/* Style for the regular nodes (SVG <circle>) */
+.node-regular {
     cursor: grab;
     fill: rgb(220, 172, 255);             /* Fill color of the node */
     stroke: black;          /* Optional: Stroke (border) color */
     stroke-width: 3; 
+}
+
+
+.node-start {
+    cursor: grab;
+    fill: green;
+    stroke: black;
+    stroke-width: 3;
+}
+
+.node-end {
+    cursor: grab;
+    fill: red;
+    stroke: black;
+    stroke-width: 3;
 }
 
 /* Position the SVG behind the nodes */

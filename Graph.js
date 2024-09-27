@@ -9,6 +9,8 @@ export class Graph {
         this.svg = null; // SVG element for edges and nodes
         this.graphContainer = null; // Container for svg element
         this.containerRect = null; // absolute positioning of graphContainer in DOM
+        this.startNode = null; // specify the start node by ID
+        this.endNode = null; //specify the end node by ID
     }
 
     // Initialize the graph with SVG container
@@ -24,7 +26,7 @@ export class Graph {
 
             // Create the SVG circle element for the node
             const nodeCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-            nodeCircle.classList.add('node');
+            nodeCircle.classList.add('node-regular');
             nodeCircle.setAttribute('id', node.id);
             nodeCircle.setAttribute('cx', node.x); // X position
             nodeCircle.setAttribute('cy', node.y); // Y position
@@ -34,6 +36,7 @@ export class Graph {
             nodeCircle.addEventListener('mousedown', this.handleMouseDown.bind(this, node));
             document.addEventListener('mouseup', this.handleMouseUp.bind(this));
             document.addEventListener('mousemove', this.handleMouseMove.bind(this));
+            nodeCircle.addEventListener('click', this.handleNodeClick.bind(this));
 
             // Append the circle to the SVG
             // Append the circle to the nodes group (so it's on top of the edges)
@@ -86,6 +89,14 @@ export class Graph {
         }
     }
     
+    // Handle click event
+    handleNodeClick(event) {
+        const nodeId = event.target.id;
+        const node = this.nodes[nodeId];
+        const nodeElement = event.target;
+
+        // to-do
+    }
 
     // Handle mouse down event (start dragging)
     handleMouseDown(node, event) {
