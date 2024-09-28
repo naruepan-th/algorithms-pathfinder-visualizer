@@ -20,14 +20,23 @@ export class Graph {
     }
 
     // Add a node (SVG <circle>) to the graph
-    addNode(node) {
+    addNode(node, type) {
         if (!this.nodes[node.id]) {
             this.nodes[node.id] = node;
             this.adjacencyList.set(node.id, []); // Initialize adjacency list for the node
 
+            // add node to startNode or endNode if type is congruent to that
+            if (type === 'start') {
+                this.startNode = node;
+                node.type = 'start';
+            } else if (type === 'end') {
+                this.endNode = node;
+                node.type = 'end';
+            }
+
             // Create the SVG circle element for the node
             const nodeCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-            nodeCircle.classList.add('node-regular');
+            nodeCircle.classList.add(`node-${type}`);
             nodeCircle.setAttribute('id', node.id);
             nodeCircle.setAttribute('cx', node.x); // X position
             nodeCircle.setAttribute('cy', node.y); // Y position

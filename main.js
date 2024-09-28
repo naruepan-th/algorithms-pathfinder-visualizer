@@ -35,8 +35,15 @@ function createGrid() {
             const x = col * horizontalSpacing + offsetX;  // Adjust horizontal position
             const y = row * verticalSpacing + offsetY;  // Adjust vertical position
 
-            // Add the node to the graph
-            graph.addNode(new Node(nodeId, x, y));
+            // add start and end node to graph
+            if (row === Math.trunc(gridRows/4) && col === Math.trunc(gridCols/4)) {
+                graph.addNode(new Node(nodeId, x, y), 'start');
+            } else if (row === Math.trunc(gridRows - gridRows/4) && col === Math.trunc(gridCols - gridCols/4)) {
+                graph.addNode(new Node(nodeId, x, y), 'end');
+            } else {
+                 // Add regular node to graph
+                graph.addNode(new Node(nodeId, x, y), 'regular');
+            }
 
             // Add edges to neighboring nodes
             // Edge to the left neighbor (if not on the first column)
