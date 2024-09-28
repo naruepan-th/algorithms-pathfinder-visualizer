@@ -11,6 +11,7 @@ export class Graph {
         this.containerRect = null; // absolute positioning of graphContainer in DOM
         this.startNode = null; // specify the start node by ID
         this.endNode = null; //specify the end node by ID
+        this.startEndToggle = 0; //a toggle for the handleNodeClick function
     }
 
     // Initialize the graph with SVG container
@@ -95,7 +96,74 @@ export class Graph {
         const node = this.nodes[nodeId];
         const nodeElement = event.target;
 
-        // to-do
+        if (!this.startNode && !this.endNode) {
+            node.type = 'start';
+            this.startNode = node;
+            nodeElement.classList.remove('node-regular');
+            nodeElement.classList.add('node-start');
+        } else if (this.startNode && !this.endNode) {
+            if (node.type !== 'start') {
+                node.type = 'end';
+                this.endNode = node;
+                nodeElement.classList.remove('node-regular');
+                nodeElement.classList.add('node-end');
+            } else {
+                node.type = 'regular';
+                this.startNode = null;
+                nodeElement.classList.remove('node-start');
+                nodeElement.classList.add('node-regular');
+            }
+        } else if (!this.startNode && this.endNode) {
+            if (node.type !== 'end') {
+                node.type = 'start';
+                this.startNode = node;
+                nodeElement.classList.remove('node-regular');
+                nodeElement.classList.add('node-start');
+            } else {
+                node.type = 'regular';
+                this.endNode = null;
+                nodeElement.classList.remove('node-end');
+                nodeElement.classList.add('node-regular');
+            }
+        } else {
+            if (node.type === 'start') {
+                node.type = 'regular';
+                this.startNode = null;
+                nodeElement.classList.remove('node-start');
+                nodeElement.classList.add('node-regular');
+            } else if (node.type === 'end') {
+                node.type = 'regular';
+                this.endNode = null;
+                nodeElement.classList.remove('node-end');
+                nodeElement.classList.add('node-regular');
+            } else {
+                if (this.startEndToggle === 0) {
+                    const previousStartNodeElement = document.getElementById(this.startNode.id);
+                    previousStartNodeElement.classList.remove('node-start');
+                    previousStartNodeElement.classList.add('node-regular');
+                    this.startNode.type = 'regular';
+                    this.startNode = null;
+                    
+                    node.type = 'start';
+                    this.startNode = node;
+                    nodeElement.classList.remove('node-regular');
+                    nodeElement.classList.add('node-start');
+                    this.startEndToggle = 1;
+                } else if (this.startEndToggle === 1) {
+                    const previousEndNodeElement = document.getElementById(this.endNode.id);
+                    previousEndNodeElement.classList.remove('node-end');
+                    previousEndNodeElement.classList.add('node-regular');
+                    this.endNode.type = 'regular';
+                    this.endNode = null;
+
+                    node.type = 'end';
+                    this.endNode = node;
+                    nodeElement.classList.remove('node-regular');
+                    nodeElement.classList.add('node-end');
+                    this.startEndToggle = 0;
+                }
+            }
+        }
     }
 
     // Handle mouse down event (start dragging)
