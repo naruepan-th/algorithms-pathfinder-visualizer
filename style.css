@@ -1,3 +1,14 @@
+#visualizeButton{
+    margin: 1%;
+    padding: 1% 2%;
+    font-size: 20px;
+    border-radius: 10px;
+    background-color: rgb(240, 240, 240);
+    color: rgb(220, 172, 255);
+    border: 3px solid black;
+    font-weight: bold;
+}
+
 line {
     stroke: black;          /* Line color */
     stroke-width: 4;        /* Line thickness */
@@ -40,4 +51,5 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
+    margin: 0;
 }
