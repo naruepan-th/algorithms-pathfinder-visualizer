@@ -63,3 +63,9 @@ function createGrid() {
 
 // Create the grid of nodes with edges
 createGrid();
+
+document.querySelector('#visualizeButton').addEventListener('click', handleVisualizeClick);
+
+function handleVisualizeClick() {
+    console.log("button clicked!")
+}

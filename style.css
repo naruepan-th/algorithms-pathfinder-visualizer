@@ -1,3 +1,7 @@
+#visualizeButton:active{
+    background-color: black;
+}
+
 #visualizeButton{
     margin: 1%;
     padding: 1% 2%;
@@ -7,6 +11,7 @@
     color: rgb(220, 172, 255);
     border: 3px solid black;
     font-weight: bold;
+    transition: background-color 0.3s cubic-bezier(0, 1, 0.29, 1);
 }
 
 line {
