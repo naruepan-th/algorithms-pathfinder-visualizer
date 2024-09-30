@@ -67,5 +67,66 @@ createGrid();
 document.querySelector('#visualizeButton').addEventListener('click', handleVisualizeClick);
 
 function handleVisualizeClick() {
-    console.log("button clicked!")
+    runDijkstra(graph);
+}
+
+function runDijkstra(graph) {
+    const visitedNodes = new Set();
+    const priorityQueue = [];
+    const distances = {};
+    const prevNodes = {};
+
+    Object.keys(graph.nodes).forEach(nodeId => {
+        distances[nodeId] = Infinity;
+    });
+    distances[graph.startNode.id] = 0;
+    
+    // Initialize the priority queue with the start node
+    priorityQueue.push({ nodeId: graph.startNode.id, distance: 0});
+
+    while (priorityQueue.length > 0) {
+        //sort the priorityQueue by shortest distances
+        priorityQueue.sort((a, b) => a.distance - b.distance);
+        const { nodeId, distance } = priorityQueue.shift();
+
+        //skip node if it's already visited
+        if (visitedNodes.has(nodeId)) {
+            continue;
+        }
+
+        //mark node as visited
+        visitedNodes.add(nodeId);
+
+        //if current node is the end node then we are done
+        if (nodeId === graph.endNode.id) {
+            let currentNode = graph.endNode.id;
+            console.log("foundpath!");
+            while (currentNode !== graph.startNode.id) {
+                console.log(currentNode);
+                if (currentNode !== graph.startNode.id && currentNode !== graph.endNode.id) {
+                    document.getElementById(`${currentNode}`).classList.remove("node-regular");
+                    document.getElementById(`${currentNode}`).classList.add("node-highlighted");
+                }
+                currentNode = prevNodes[currentNode];
+            }
+            return;
+        }
+
+        const neighbors = graph.adjacencyList.get(nodeId);
+
+        neighbors.forEach((neighbor) => {
+            if (!visitedNodes.has(neighbor.nodeId)) {
+                const tentativeDistance = distance + neighbor.weight;
+
+                if (tentativeDistance < distances[neighbor.nodeId]) {
+                    distances[neighbor.nodeId] = tentativeDistance;
+                    prevNodes[neighbor.nodeId] = nodeId;
+                    priorityQueue.push({nodeId: neighbor.nodeId, distance: tentativeDistance});
+                }
+            }
+        });
+    }
+
+    console.log("no path found");
+    return;
 }

@@ -42,6 +42,13 @@ line {
     stroke-width: 3;
 }
 
+.node-highlighted {
+    cursor: grab;
+    fill: rgb(30, 178, 136);
+    stroke: black;
+    stroke-width: 3;
+}
+
 /* Position the SVG behind the nodes */
 #graphSvg {
     display: block;

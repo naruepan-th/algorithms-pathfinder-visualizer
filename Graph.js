@@ -60,8 +60,8 @@ export class Graph {
     
         if (node1 && node2) {
             const distance = node1.getDistanceTo(node2); // Calculate weight based on distance
-            this.adjacencyList.get(node1Id).push({ node: node2Id, weight: distance });
-            this.adjacencyList.get(node2Id).push({ node: node1Id, weight: distance }); // Bidirectional
+            this.adjacencyList.get(node1Id).push({ nodeId: node2Id, weight: distance });
+            this.adjacencyList.get(node2Id).push({ nodeId: node1Id, weight: distance }); // Bidirectional
     
             // Draw the edge in the SVG (store in the edgeElements map)
             const edgeId1 = `${node1Id}-${node2Id}`;
@@ -198,7 +198,7 @@ export class Graph {
     
                 // Update only the edges connected to the node
                 this.adjacencyList.get(node.id).forEach(edge => {
-                    this.updateEdgePosition(node.id, edge.node);
+                    this.updateEdgePosition(node.id, edge.nodeId);
                 });
             }
         });
