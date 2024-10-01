@@ -92,6 +92,8 @@ function runDijkstra(graph) {
     const priorityQueue = [];
     const distances = {};
     const prevNodes = {};
+    let delay = 0;
+    let delayAmount = 50;
 
     Object.keys(graph.nodes).forEach(nodeId => {
         distances[nodeId] = Infinity;
@@ -114,7 +116,10 @@ function runDijkstra(graph) {
         //mark node as visited and highlight visited nodes
         visitedNodes.add(nodeId);
         if (graph.nodes[nodeId].type !== 'start' && graph.nodes[nodeId].type !== 'end') {
-            graph.nodes[nodeId].setType('highlight', document.getElementById(`${nodeId}`));
+            setTimeout(() => {
+                graph.nodes[nodeId].setType('highlight', document.getElementById(`${nodeId}`));
+            }, delay);
+            delay += delayAmount;
         }
 
         //if current node is the end node then we are done
@@ -123,7 +128,11 @@ function runDijkstra(graph) {
             console.log("foundpath!");
             while (currentNode !== graph.startNode.id) {
                 if (currentNode !== graph.startNode.id && currentNode !== graph.endNode.id) {
-                    graph.nodes[currentNode].setType('path', document.getElementById(`${currentNode}`));
+                    let capturedNode = currentNode;
+                    setTimeout(() => {
+                        graph.nodes[capturedNode].setType('path', document.getElementById(`${capturedNode}`));
+                    }, delay);
+                    delay += delayAmount;
                 }
                 currentNode = prevNodes[currentNode];
             }
