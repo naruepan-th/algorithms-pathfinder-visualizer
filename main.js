@@ -70,11 +70,11 @@ function handleVisualizeClick() {
     if (graph.selectedAlgorithm === 'dijkstra') {
         runDijkstra(graph);
     } else if (graph.selectedAlgorithm === 'astar') {
-        console.log('astar not implemented yet');
+        alert("astar not implemented yet, coming soon!");
     } else if (graph.selectedAlgorithm === 'bfs') {
-        console.log('bfs not implemented yet');
+        alert("bfs not implemented yet, coming soon!");
     } else if (graph.selectedAlgorithm === 'dfs') {
-        console.log('dfs not implemented yet');
+        alert("dfs not implemented yet, coming soon!");
     }
 }
 
