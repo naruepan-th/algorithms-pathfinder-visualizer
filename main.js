@@ -64,10 +64,20 @@ function createGrid() {
 // Create the grid of nodes with edges
 createGrid();
 
+const prevPathSet = new Set();
+
 document.querySelector('#visualizeButton').addEventListener('click', handleVisualizeClick);
+
+function clearGrid() {
+    prevPathSet.forEach(nodeId => {
+        prevPathSet.delete(nodeId);
+        graph.nodes[nodeId].setType('regular', document.getElementById(`${nodeId}`));
+    })
+}
 
 function handleVisualizeClick() {
     if (graph.selectedAlgorithm === 'dijkstra') {
+        clearGrid();
         runDijkstra(graph);
     } else if (graph.selectedAlgorithm === 'astar') {
         alert("astar not implemented yet, coming soon!");
@@ -77,6 +87,8 @@ function handleVisualizeClick() {
         alert("dfs not implemented yet, coming soon!");
     }
 }
+
+
 
 function runDijkstra(graph) {
     const visitedNodes = new Set();
@@ -110,13 +122,13 @@ function runDijkstra(graph) {
             let currentNode = graph.endNode.id;
             console.log("foundpath!");
             while (currentNode !== graph.startNode.id) {
-                console.log(currentNode);
                 if (currentNode !== graph.startNode.id && currentNode !== graph.endNode.id) {
-                    document.getElementById(`${currentNode}`).classList.remove("node-regular");
-                    document.getElementById(`${currentNode}`).classList.add("node-highlighted");
+                    graph.nodes[currentNode].setType('path', document.getElementById(`${currentNode}`));
+                    prevPathSet.add(currentNode);
                 }
                 currentNode = prevNodes[currentNode];
             }
+            console.log(prevPathSet);
             return;
         }
 

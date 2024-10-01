@@ -49,7 +49,7 @@ line {
     stroke-width: 3;
 }
 
-.node-highlighted {
+.node-path {
     cursor: grab;
     fill: rgb(30, 178, 136);
     stroke: black;

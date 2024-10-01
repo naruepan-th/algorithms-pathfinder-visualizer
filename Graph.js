@@ -225,7 +225,6 @@ export class Graph {
                             neighbor.weight = node.getDistanceTo(this.nodes[edge.nodeId]);
                         }
                     });
-                    console.log(this.adjacencyList.get(node.id));
                 });
             }
         });
