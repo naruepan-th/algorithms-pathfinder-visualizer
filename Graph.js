@@ -125,69 +125,47 @@ export class Graph {
         const nodeElement = event.target;
 
         if (!this.startNode && !this.endNode) {
-            node.type = 'start';
+            node.setType('start', nodeElement);
             this.startNode = node;
-            nodeElement.classList.remove('node-regular');
-            nodeElement.classList.add('node-start');
         } else if (this.startNode && !this.endNode) {
             if (node.type !== 'start') {
-                node.type = 'end';
+                node.setType('end', nodeElement);
                 this.endNode = node;
-                nodeElement.classList.remove('node-regular');
-                nodeElement.classList.add('node-end');
             } else {
-                node.type = 'regular';
+                node.setType('regular', nodeElement);
                 this.startNode = null;
-                nodeElement.classList.remove('node-start');
-                nodeElement.classList.add('node-regular');
             }
         } else if (!this.startNode && this.endNode) {
             if (node.type !== 'end') {
-                node.type = 'start';
+                node.setType('start', nodeElement);
                 this.startNode = node;
-                nodeElement.classList.remove('node-regular');
-                nodeElement.classList.add('node-start');
             } else {
-                node.type = 'regular';
+                node.setType('regular', nodeElement);
                 this.endNode = null;
-                nodeElement.classList.remove('node-end');
-                nodeElement.classList.add('node-regular');
             }
         } else {
             if (node.type === 'start') {
-                node.type = 'regular';
+                node.setType('regular', nodeElement);
                 this.startNode = null;
-                nodeElement.classList.remove('node-start');
-                nodeElement.classList.add('node-regular');
             } else if (node.type === 'end') {
-                node.type = 'regular';
+                node.setType('regular', nodeElement);
                 this.endNode = null;
-                nodeElement.classList.remove('node-end');
-                nodeElement.classList.add('node-regular');
             } else {
                 if (this.startEndToggle === 0) {
                     const previousStartNodeElement = document.getElementById(this.startNode.id);
-                    previousStartNodeElement.classList.remove('node-start');
-                    previousStartNodeElement.classList.add('node-regular');
-                    this.startNode.type = 'regular';
+                    this.startNode.setType('regular', previousStartNodeElement);
                     this.startNode = null;
                     
-                    node.type = 'start';
+                    node.setType('start', nodeElement);
                     this.startNode = node;
-                    nodeElement.classList.remove('node-regular');
-                    nodeElement.classList.add('node-start');
                     this.startEndToggle = 1;
                 } else if (this.startEndToggle === 1) {
                     const previousEndNodeElement = document.getElementById(this.endNode.id);
-                    previousEndNodeElement.classList.remove('node-end');
-                    previousEndNodeElement.classList.add('node-regular');
-                    this.endNode.type = 'regular';
+                    this.endNode.setType('regular', previousEndNodeElement);
                     this.endNode = null;
 
-                    node.type = 'end';
+                    node.setType('end', nodeElement);
                     this.endNode = node;
-                    nodeElement.classList.remove('node-regular');
-                    nodeElement.classList.add('node-end');
                     this.startEndToggle = 0;
                 }
             }
