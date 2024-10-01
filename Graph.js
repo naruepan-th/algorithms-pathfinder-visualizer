@@ -12,6 +12,25 @@ export class Graph {
         this.startNode = null; // specify the start node by ID
         this.endNode = null; //specify the end node by ID
         this.startEndToggle = 0; //a toggle for the handleNodeClick function
+        this.selectedAlgorithm = 'dijkstra'; //a variable to tell us which algorithm is selected in drop down menu
+
+        // Bind the dropdown event listener to update the algorithm
+        this.setupAlgorithmSelector();
+    }
+
+    // Method to set up the dropdown listener
+    setupAlgorithmSelector() {
+        const algorithmSelect = document.getElementById('algorithmSelect');
+        
+        // Add an event listener to handle when a new option is selected
+        algorithmSelect.addEventListener('change', (event) => {
+            this.updateAlgorithm(event.target.value);
+        });
+    }
+
+    // Method to update the selected algorithm in the class
+    updateAlgorithm(selectedValue) {
+        this.selectedAlgorithm = selectedValue;
     }
 
     // Initialize the graph with SVG container

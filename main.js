@@ -67,7 +67,15 @@ createGrid();
 document.querySelector('#visualizeButton').addEventListener('click', handleVisualizeClick);
 
 function handleVisualizeClick() {
-    runDijkstra(graph);
+    if (graph.selectedAlgorithm === 'dijkstra') {
+        runDijkstra(graph);
+    } else if (graph.selectedAlgorithm === 'astar') {
+        console.log('astar not implemented yet');
+    } else if (graph.selectedAlgorithm === 'bfs') {
+        console.log('bfs not implemented yet');
+    } else if (graph.selectedAlgorithm === 'dfs') {
+        console.log('dfs not implemented yet');
+    }
 }
 
 function runDijkstra(graph) {
