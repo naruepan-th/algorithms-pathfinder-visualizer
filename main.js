@@ -9,8 +9,8 @@ const graph = new Graph();
 graph.init('graphSvg');
 
 // Grid settings
-const gridRows = 9;  // Number of rows in the grid
-const gridCols = 21;  // Number of columns in the grid
+const gridRows = 4;  // Number of rows in the grid
+const gridCols = 4;  // Number of columns in the grid
 const nodeRadius = 10; // radius of a node
 
 // Function to create the grid of nodes

@@ -196,9 +196,17 @@ export class Graph {
                 nodeCircle.setAttribute('cx', node.x);
                 nodeCircle.setAttribute('cy', node.y);
     
-                // Update only the edges connected to the node
+                // Update only the edges connected to the node and neighbor's weights
                 this.adjacencyList.get(node.id).forEach(edge => {
                     this.updateEdgePosition(node.id, edge.nodeId);
+                    edge.weight = node.getDistanceTo(this.nodes[edge.nodeId]);
+
+                    this.adjacencyList.get(edge.nodeId).forEach(neighbor => {
+                        if (neighbor.nodeId === node.id) {
+                            neighbor.weight = node.getDistanceTo(this.nodes[edge.nodeId]);
+                        }
+                    });
+                    console.log(this.adjacencyList.get(node.id));
                 });
             }
         });

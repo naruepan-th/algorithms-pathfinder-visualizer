@@ -9,6 +9,13 @@
     <body>
         <button id="visualizeButton"> Visualize </button>
 
+        <select id="algorithmSelect">
+            <option value="dijkstra" selected>Dijkstra's Algorithm</option>
+            <option value="astar">A* Algorithm</option>
+            <option value="bfs">Breadth-First Search</option>
+            <option value="dfs">Depth-First Search</option>
+        </select>
+
         <!-- SVG container for edges and nodes -->
         <svg id="graphSvg">
             <!-- Group for edges (lines) -->
