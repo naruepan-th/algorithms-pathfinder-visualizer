@@ -54,7 +54,7 @@ line {
     fill: rgb(30, 178, 136);
     stroke: black;
     stroke-width: 3;
-    transition: fill 0.5s ease;
+    /* transition: fill 0.5s ease; */
 }
 
 .node-highlight {
@@ -62,7 +62,7 @@ line {
     fill: rgb(155, 77, 158);
     stroke: black;
     stroke-width: 3;
-    transition: fill 0.5s ease;
+    /* transition: fill 0.5s ease; */
 }
 
 /* Position the SVG behind the nodes */

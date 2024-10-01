@@ -65,6 +65,15 @@ function createGrid() {
 createGrid();
 
 document.querySelector('#visualizeButton').addEventListener('click', handleVisualizeClick);
+const timeoutIds = new Set();
+
+function clearTimeouts() {
+    console.log(timeoutIds);
+    timeoutIds.forEach(timeoutId => {
+        clearTimeout(timeoutId);
+    })
+    timeoutIds.clear();
+}
 
 function clearGrid() {
     Object.values(graph.nodes).forEach(node => {
@@ -76,6 +85,7 @@ function clearGrid() {
 
 function handleVisualizeClick() {
     if (graph.selectedAlgorithm === 'dijkstra') {
+        clearTimeouts();
         clearGrid();
         runDijkstra(graph);
     } else if (graph.selectedAlgorithm === 'astar') {
@@ -116,9 +126,10 @@ function runDijkstra(graph) {
         //mark node as visited and highlight visited nodes
         visitedNodes.add(nodeId);
         if (graph.nodes[nodeId].type !== 'start' && graph.nodes[nodeId].type !== 'end') {
-            setTimeout(() => {
+            let timeoutId = setTimeout(() => {
                 graph.nodes[nodeId].setType('highlight', document.getElementById(`${nodeId}`));
             }, delay);
+            timeoutIds.add(timeoutId);
             delay += delayAmount;
         }
 
@@ -129,9 +140,10 @@ function runDijkstra(graph) {
             while (currentNode !== graph.startNode.id) {
                 if (currentNode !== graph.startNode.id && currentNode !== graph.endNode.id) {
                     let capturedNode = currentNode;
-                    setTimeout(() => {
+                    let timeoutId = setTimeout(() => {
                         graph.nodes[capturedNode].setType('path', document.getElementById(`${capturedNode}`));
                     }, delay);
+                    timeoutIds.add(timeoutId);
                     delay += delayAmount;
                 }
                 currentNode = prevNodes[currentNode];
