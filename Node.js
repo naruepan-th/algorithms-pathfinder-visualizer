@@ -27,6 +27,5 @@ export class Node {
         // Set the new type and apply the corresponding class
         this.type = newType;
         element.classList.add(`node-${newType}`);
-        console.log("typeset!")
     }
 }

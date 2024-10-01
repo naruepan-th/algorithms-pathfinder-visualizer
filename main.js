@@ -64,15 +64,14 @@ function createGrid() {
 // Create the grid of nodes with edges
 createGrid();
 
-const prevPathSet = new Set();
-
 document.querySelector('#visualizeButton').addEventListener('click', handleVisualizeClick);
 
 function clearGrid() {
-    prevPathSet.forEach(nodeId => {
-        prevPathSet.delete(nodeId);
-        graph.nodes[nodeId].setType('regular', document.getElementById(`${nodeId}`));
-    })
+    Object.values(graph.nodes).forEach(node => {
+        if (node.type !== 'start' && node.type !== 'end') {
+            node.setType('regular', document.getElementById(`${node.id}`));
+        }
+    });
 }
 
 function handleVisualizeClick() {
@@ -87,8 +86,6 @@ function handleVisualizeClick() {
         alert("dfs not implemented yet, coming soon!");
     }
 }
-
-
 
 function runDijkstra(graph) {
     const visitedNodes = new Set();
@@ -114,8 +111,11 @@ function runDijkstra(graph) {
             continue;
         }
 
-        //mark node as visited
+        //mark node as visited and highlight visited nodes
         visitedNodes.add(nodeId);
+        if (graph.nodes[nodeId].type !== 'start' && graph.nodes[nodeId].type !== 'end') {
+            graph.nodes[nodeId].setType('highlight', document.getElementById(`${nodeId}`));
+        }
 
         //if current node is the end node then we are done
         if (nodeId === graph.endNode.id) {
@@ -124,11 +124,9 @@ function runDijkstra(graph) {
             while (currentNode !== graph.startNode.id) {
                 if (currentNode !== graph.startNode.id && currentNode !== graph.endNode.id) {
                     graph.nodes[currentNode].setType('path', document.getElementById(`${currentNode}`));
-                    prevPathSet.add(currentNode);
                 }
                 currentNode = prevNodes[currentNode];
             }
-            console.log(prevPathSet);
             return;
         }
 
