@@ -15,6 +15,7 @@ export class Graph {
         this.endNode = null; //specify the end node by ID
         this.startEndToggle = 0; //a toggle for the handleNodeClick function
         this.selectedAlgorithm = 'dijkstra'; //a variable to tell us which algorithm is selected in drop down menu
+        this.isVisualizing = false;
 
         // Bind the dropdown event listener to update the algorithm
         this.setupAlgorithmSelector();
@@ -63,6 +64,9 @@ export class Graph {
             nodeCircle.setAttribute('cy', node.y); // Y position
             nodeCircle.setAttribute('r', 10); // Radius of the circle
 
+            //set grab to node
+            node.setGrabOrDefault('grab', nodeCircle);
+
             // Add event listeners for dragging
             nodeCircle.addEventListener('mousedown', this.handleMouseDown.bind(this, node));
             document.addEventListener('mouseup', this.handleMouseUp.bind(this));
@@ -72,6 +76,7 @@ export class Graph {
             // Append the circle to the SVG
             // Append the circle to the nodes group (so it's on top of the edges)
             this.svg.querySelector('#nodes').appendChild(nodeCircle);
+
         }
     }
 
@@ -176,51 +181,57 @@ export class Graph {
 
     // Handle mouse down event (start dragging)
     handleMouseDown(node, event) {
-        node.isDragging = true;
-        this.containerRect = this.svg.getBoundingClientRect(); // Get SVG container's bounding box
-        this.svgWidth = document.getElementById('graphSvg').clientWidth;
-        this.svgHeight = document.getElementById('graphSvg').clientHeight;
+        if (this.isVisualizing === false) {
+            node.isDragging = true;
+            this.containerRect = this.svg.getBoundingClientRect(); // Get SVG container's bounding box
+            this.svgWidth = document.getElementById('graphSvg').clientWidth;
+            this.svgHeight = document.getElementById('graphSvg').clientHeight;
+        }
     }
 
     // Handle mouse move event (dragging)
     handleMouseMove(event) {
-        Object.values(this.nodes).forEach(node => {
-            if (node.isDragging) {
-                const mouseX = event.clientX - this.containerRect.left;
-                const mouseY = event.clientY - this.containerRect.top;
-                
-                 // Apply boundaries for x and y to keep the node inside the SVG
-                const boundedX = Math.max(0, Math.min(mouseX, this.svgWidth));  // Clamp between 0 and svgWidth
-                const boundedY = Math.max(0, Math.min(mouseY, this.svgHeight)); // Clamp between 0 and svgHeight
+        if (this.isVisualizing === false) {
+            Object.values(this.nodes).forEach(node => {
+                if (node.isDragging) {
+                    const mouseX = event.clientX - this.containerRect.left;
+                    const mouseY = event.clientY - this.containerRect.top;
+                    
+                    // Apply boundaries for x and y to keep the node inside the SVG
+                    const boundedX = Math.max(0, Math.min(mouseX, this.svgWidth));  // Clamp between 0 and svgWidth
+                    const boundedY = Math.max(0, Math.min(mouseY, this.svgHeight)); // Clamp between 0 and svgHeight
 
-                // Update node position
-                node.updatePosition(boundedX, boundedY);
-    
-                // Update circle position using 'cx' and 'cy'
-                const nodeCircle = document.getElementById(node.id);
-                nodeCircle.setAttribute('cx', node.x);
-                nodeCircle.setAttribute('cy', node.y);
-    
-                // Update only the edges connected to the node and neighbor's weights
-                this.adjacencyList.get(node.id).forEach(edge => {
-                    this.updateEdgePosition(node.id, edge.nodeId);
-                    edge.weight = node.getDistanceTo(this.nodes[edge.nodeId]);
+                    // Update node position
+                    node.updatePosition(boundedX, boundedY);
+        
+                    // Update circle position using 'cx' and 'cy'
+                    const nodeCircle = document.getElementById(node.id);
+                    nodeCircle.setAttribute('cx', node.x);
+                    nodeCircle.setAttribute('cy', node.y);
+        
+                    // Update only the edges connected to the node and neighbor's weights
+                    this.adjacencyList.get(node.id).forEach(edge => {
+                        this.updateEdgePosition(node.id, edge.nodeId);
+                        edge.weight = node.getDistanceTo(this.nodes[edge.nodeId]);
 
-                    this.adjacencyList.get(edge.nodeId).forEach(neighbor => {
-                        if (neighbor.nodeId === node.id) {
-                            neighbor.weight = node.getDistanceTo(this.nodes[edge.nodeId]);
-                        }
+                        this.adjacencyList.get(edge.nodeId).forEach(neighbor => {
+                            if (neighbor.nodeId === node.id) {
+                                neighbor.weight = node.getDistanceTo(this.nodes[edge.nodeId]);
+                            }
+                        });
                     });
-                });
-            }
-        });
+                }
+            });
+        }
     }
     
 
     // Handle mouse up event (stop dragging)
     handleMouseUp() {
-        Object.values(this.nodes).forEach(node => {
-            node.isDragging = false; // Stop dragging
-        });
+        if (this.isVisualizing === false) {
+            Object.values(this.nodes).forEach(node => {
+                node.isDragging = false; // Stop dragging
+            });
+        }
     }
 }

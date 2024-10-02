@@ -68,7 +68,6 @@ document.querySelector('#visualizeButton').addEventListener('click', handleVisua
 const timeoutIds = new Set();
 
 function clearTimeouts() {
-    console.log(timeoutIds);
     timeoutIds.forEach(timeoutId => {
         clearTimeout(timeoutId);
     })
@@ -84,14 +83,18 @@ function clearGrid() {
 }
 
 function clearBoard() {
-    clearTimeouts();
-    clearGrid();
+    clearTimeouts(); //cancel all animations
+    clearGrid(); //clear the board
+}
+
+function setForAllNodesGrabOrDefault (grabOrDefault) {
+    Object.values(graph.nodes).forEach(node => {
+        node.setGrabOrDefault(grabOrDefault, document.getElementById(`${node.id}`));
+    });
 }
 
 function handleVisualizeClick() {
     if (graph.selectedAlgorithm === 'dijkstra') {
-        clearTimeouts();
-        clearGrid();
         runDijkstra(graph);
     } else if (graph.selectedAlgorithm === 'astar') {
         alert("astar not implemented yet, coming soon!");
@@ -103,6 +106,10 @@ function handleVisualizeClick() {
 }
 
 function runDijkstra(graph) {
+    clearBoard();
+    graph.isVisualizing = true;
+    setForAllNodesGrabOrDefault('default');
+    
     const visitedNodes = new Set();
     const priorityQueue = [];
     const distances = {};
@@ -149,10 +156,15 @@ function runDijkstra(graph) {
                         graph.nodes[capturedNode].setType('path', document.getElementById(`${capturedNode}`));
                     }, delay);
                     timeoutIds.add(timeoutId);
+                    console.log(`in while loop ${delay}`);
                     delay += delayAmount;
                 }
                 currentNode = prevNodes[currentNode];
             }
+            timeoutIds.add(setTimeout(() => {
+                graph.isVisualizing = false;
+                setForAllNodesGrabOrDefault('grab');
+            }, delay));
             return;
         }
 
@@ -172,5 +184,7 @@ function runDijkstra(graph) {
     }
 
     console.log("no path found");
+    graph.isVisualizing = false;
+    setForAllNodesGrabOrDefault('grab');
     return;
 }

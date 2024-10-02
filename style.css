@@ -26,9 +26,16 @@ line {
     stroke-width: 4;        /* Line thickness */
 }
 
+.grab {
+    cursor: grab;
+}
+
+.default {
+    cursor: default;
+}
+
 /* Style for the regular nodes (SVG <circle>) */
 .node-regular {
-    cursor: grab;
     fill: rgb(220, 172, 255);             /* Fill color of the node */
     stroke: black;          /* Optional: Stroke (border) color */
     stroke-width: 3; 
@@ -36,28 +43,24 @@ line {
 
 
 .node-start {
-    cursor: grab;
     fill: green;
     stroke: black;
     stroke-width: 3;
 }
 
 .node-end {
-    cursor: grab;
     fill: red;
     stroke: black;
     stroke-width: 3;
 }
 
 .node-path {
-    cursor: grab;
     fill: rgb(30, 178, 136);
     stroke: black;
     stroke-width: 3;
 }
 
 .node-highlight {
-    cursor: grab;
     fill: rgb(155, 77, 158);
     stroke: black;
     stroke-width: 3;
