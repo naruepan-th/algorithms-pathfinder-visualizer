@@ -1,13 +1,25 @@
-#visualizeButton:active{
+.visualizeButton-stop{
     background-color: black;
-}
-
-#visualizeButton {
     margin: 1% 1% 0.1% 1%;
-    padding: 1% 2%;
+    padding: 0;
+    width: 150px;
+    height: 55px;
     font-size: 20px;
     border-radius: 10px;
+    color: rgb(220, 172, 255);
+    border: 3px solid black;
+    font-weight: bold;
+    transition: background-color 0.3s cubic-bezier(0, 1, 0.29, 1);
+}
+
+.visualizeButton-visualize {
     background-color: rgb(240, 240, 240);
+    margin: 1% 1% 0.1% 1%;
+    padding: 0;
+    width: 150px;
+    height: 55px;
+    font-size: 20px;
+    border-radius: 10px;
     color: rgb(220, 172, 255);
     border: 3px solid black;
     font-weight: bold;

@@ -62,7 +62,10 @@ function createGrid() {
 }
 
 // Create the grid of nodes with edges
+
 createGrid();
+
+var visualizeButtonMode = 'visualize';
 
 document.querySelector('#visualizeButton').addEventListener('click', handleVisualizeClick);
 const timeoutIds = new Set();
@@ -91,23 +94,45 @@ function setForAllNodesGrabOrDefault (grabOrDefault) {
     Object.values(graph.nodes).forEach(node => {
         node.setGrabOrDefault(grabOrDefault, document.getElementById(`${node.id}`));
     });
+    if (grabOrDefault === 'default') {
+        graph.isVisualizing = true;
+    } else {
+        graph.isVisualizing = false;
+    }
+}
+
+function setVisualizeButtonMode(mode, element) {
+    element.classList.remove(`visualizeButton-${visualizeButtonMode}`);
+    visualizeButtonMode = mode;
+    element.classList.add(`visualizeButton-${mode}`);
+    if (mode === 'visualize') {
+        element.textContent = 'Visualize';
+    } else {
+        element.textContent = 'Stop';
+    }
 }
 
 function handleVisualizeClick() {
-    if (graph.selectedAlgorithm === 'dijkstra') {
-        runDijkstra(graph);
-    } else if (graph.selectedAlgorithm === 'astar') {
-        alert("astar not implemented yet, coming soon!");
-    } else if (graph.selectedAlgorithm === 'bfs') {
-        alert("bfs not implemented yet, coming soon!");
-    } else if (graph.selectedAlgorithm === 'dfs') {
-        alert("dfs not implemented yet, coming soon!");
+    if (visualizeButtonMode === 'visualize') {
+        setVisualizeButtonMode('stop', document.getElementById('visualizeButton'));
+        if (graph.selectedAlgorithm === 'dijkstra') {
+            runDijkstra(graph);
+        } else if (graph.selectedAlgorithm === 'astar') {
+            alert("astar not implemented yet, coming soon!");
+        } else if (graph.selectedAlgorithm === 'bfs') {
+            alert("bfs not implemented yet, coming soon!");
+        } else if (graph.selectedAlgorithm === 'dfs') {
+            alert("dfs not implemented yet, coming soon!");
+        }
+    } else if (visualizeButtonMode === 'stop') {
+        setForAllNodesGrabOrDefault('grab');
+        setVisualizeButtonMode('visualize', document.getElementById('visualizeButton'));
+        clearBoard();
     }
 }
 
 function runDijkstra(graph) {
     clearBoard();
-    graph.isVisualizing = true;
     setForAllNodesGrabOrDefault('default');
     
     const visitedNodes = new Set();
@@ -156,14 +181,13 @@ function runDijkstra(graph) {
                         graph.nodes[capturedNode].setType('path', document.getElementById(`${capturedNode}`));
                     }, delay);
                     timeoutIds.add(timeoutId);
-                    console.log(`in while loop ${delay}`);
                     delay += delayAmount;
                 }
                 currentNode = prevNodes[currentNode];
             }
             timeoutIds.add(setTimeout(() => {
-                graph.isVisualizing = false;
                 setForAllNodesGrabOrDefault('grab');
+                setVisualizeButtonMode('visualize', document.getElementById('visualizeButton'));
             }, delay));
             return;
         }
@@ -184,7 +208,7 @@ function runDijkstra(graph) {
     }
 
     console.log("no path found");
-    graph.isVisualizing = false;
     setForAllNodesGrabOrDefault('grab');
+    setVisualizeButtonMode('visualize', document.getElementById('visualizeButton'));
     return;
 }
