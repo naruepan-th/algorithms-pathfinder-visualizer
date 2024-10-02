@@ -9,6 +9,8 @@ export class Graph {
         this.svg = null; // SVG element for edges and nodes
         this.graphContainer = null; // Container for svg element
         this.containerRect = null; // absolute positioning of graphContainer in DOM
+        this.svgWidth = null; //svg canvas width
+        this.svgHeight = null; //svg canvas height
         this.startNode = null; // specify the start node by ID
         this.endNode = null; //specify the end node by ID
         this.startEndToggle = 0; //a toggle for the handleNodeClick function
@@ -65,7 +67,7 @@ export class Graph {
             nodeCircle.addEventListener('mousedown', this.handleMouseDown.bind(this, node));
             document.addEventListener('mouseup', this.handleMouseUp.bind(this));
             document.addEventListener('mousemove', this.handleMouseMove.bind(this));
-            nodeCircle.addEventListener('click', this.handleNodeClick.bind(this));
+            // nodeCircle.addEventListener('click', this.handleNodeClick.bind(this));
 
             // Append the circle to the SVG
             // Append the circle to the nodes group (so it's on top of the edges)
@@ -119,63 +121,65 @@ export class Graph {
     }
     
     // Handle click event
-    handleNodeClick(event) {
-        const nodeId = event.target.id;
-        const node = this.nodes[nodeId];
-        const nodeElement = event.target;
+    // handleNodeClick(event) {
+    //     const nodeId = event.target.id;
+    //     const node = this.nodes[nodeId];
+    //     const nodeElement = event.target;
 
-        if (!this.startNode && !this.endNode) {
-            node.setType('start', nodeElement);
-            this.startNode = node;
-        } else if (this.startNode && !this.endNode) {
-            if (node.type !== 'start') {
-                node.setType('end', nodeElement);
-                this.endNode = node;
-            } else {
-                node.setType('regular', nodeElement);
-                this.startNode = null;
-            }
-        } else if (!this.startNode && this.endNode) {
-            if (node.type !== 'end') {
-                node.setType('start', nodeElement);
-                this.startNode = node;
-            } else {
-                node.setType('regular', nodeElement);
-                this.endNode = null;
-            }
-        } else {
-            if (node.type === 'start') {
-                node.setType('regular', nodeElement);
-                this.startNode = null;
-            } else if (node.type === 'end') {
-                node.setType('regular', nodeElement);
-                this.endNode = null;
-            } else {
-                if (this.startEndToggle === 0) {
-                    const previousStartNodeElement = document.getElementById(this.startNode.id);
-                    this.startNode.setType('regular', previousStartNodeElement);
-                    this.startNode = null;
+    //     if (!this.startNode && !this.endNode) {
+    //         node.setType('start', nodeElement);
+    //         this.startNode = node;
+    //     } else if (this.startNode && !this.endNode) {
+    //         if (node.type !== 'start') {
+    //             node.setType('end', nodeElement);
+    //             this.endNode = node;
+    //         } else {
+    //             node.setType('regular', nodeElement);
+    //             this.startNode = null;
+    //         }
+    //     } else if (!this.startNode && this.endNode) {
+    //         if (node.type !== 'end') {
+    //             node.setType('start', nodeElement);
+    //             this.startNode = node;
+    //         } else {
+    //             node.setType('regular', nodeElement);
+    //             this.endNode = null;
+    //         }
+    //     } else {
+    //         if (node.type === 'start') {
+    //             node.setType('regular', nodeElement);
+    //             this.startNode = null;
+    //         } else if (node.type === 'end') {
+    //             node.setType('regular', nodeElement);
+    //             this.endNode = null;
+    //         } else {
+    //             if (this.startEndToggle === 0) {
+    //                 const previousStartNodeElement = document.getElementById(this.startNode.id);
+    //                 this.startNode.setType('regular', previousStartNodeElement);
+    //                 this.startNode = null;
                     
-                    node.setType('start', nodeElement);
-                    this.startNode = node;
-                    this.startEndToggle = 1;
-                } else if (this.startEndToggle === 1) {
-                    const previousEndNodeElement = document.getElementById(this.endNode.id);
-                    this.endNode.setType('regular', previousEndNodeElement);
-                    this.endNode = null;
+    //                 node.setType('start', nodeElement);
+    //                 this.startNode = node;
+    //                 this.startEndToggle = 1;
+    //             } else if (this.startEndToggle === 1) {
+    //                 const previousEndNodeElement = document.getElementById(this.endNode.id);
+    //                 this.endNode.setType('regular', previousEndNodeElement);
+    //                 this.endNode = null;
 
-                    node.setType('end', nodeElement);
-                    this.endNode = node;
-                    this.startEndToggle = 0;
-                }
-            }
-        }
-    }
+    //                 node.setType('end', nodeElement);
+    //                 this.endNode = node;
+    //                 this.startEndToggle = 0;
+    //             }
+    //         }
+    //     }
+    // }
 
     // Handle mouse down event (start dragging)
     handleMouseDown(node, event) {
         node.isDragging = true;
         this.containerRect = this.svg.getBoundingClientRect(); // Get SVG container's bounding box
+        this.svgWidth = document.getElementById('graphSvg').clientWidth;
+        this.svgHeight = document.getElementById('graphSvg').clientHeight;
     }
 
     // Handle mouse move event (dragging)
@@ -184,9 +188,13 @@ export class Graph {
             if (node.isDragging) {
                 const mouseX = event.clientX - this.containerRect.left;
                 const mouseY = event.clientY - this.containerRect.top;
-    
+                
+                 // Apply boundaries for x and y to keep the node inside the SVG
+                const boundedX = Math.max(0, Math.min(mouseX, this.svgWidth));  // Clamp between 0 and svgWidth
+                const boundedY = Math.max(0, Math.min(mouseY, this.svgHeight)); // Clamp between 0 and svgHeight
+
                 // Update node position
-                node.updatePosition(mouseX, mouseY);
+                node.updatePosition(boundedX, boundedY);
     
                 // Update circle position using 'cx' and 'cy'
                 const nodeCircle = document.getElementById(node.id);

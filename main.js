@@ -83,6 +83,11 @@ function clearGrid() {
     });
 }
 
+function clearBoard() {
+    clearTimeouts();
+    clearGrid();
+}
+
 function handleVisualizeClick() {
     if (graph.selectedAlgorithm === 'dijkstra') {
         clearTimeouts();
