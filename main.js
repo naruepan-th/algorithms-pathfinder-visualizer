@@ -65,7 +65,86 @@ function createGrid() {
 
 createGrid();
 
-var visualizeButtonMode = 'visualize';
+var visualizeButtonMode = 'visualize'; //modes are 'visualize' or 'stop'
+
+document.querySelector('#changeStartNodeButton').addEventListener('click', handleChangeStartClick);
+document.querySelector('#changeEndNodeButton').addEventListener('click', handleChangeEndClick);
+
+function handleChangeStartClick() {
+    if (graph.isVisualizing === false) {
+        if (graph.changeStartPressed === false && graph.changeEndPressed === false) {
+            selectStart();
+            setForAllNodesGrabOrDefaultOrPointer('pointer');
+        } else if (graph.changeStartPressed === false && graph.changeEndPressed === true) {
+            selectStart();
+            deselectEnd();
+            setForAllNodesGrabOrDefaultOrPointer('pointer');
+        } else if (graph.changeStartPressed === true) {
+            deselectStart();
+            setForAllNodesGrabOrDefaultOrPointer('grab');
+        } 
+    }
+}
+
+function handleChangeEndClick() {
+    if (graph.isVisualizing === false) {
+        if (graph.changeStartPressed === false && graph.changeEndPressed === false) {
+            selectEnd();
+            setForAllNodesGrabOrDefaultOrPointer('pointer');
+        } else if (graph.changeStartPressed === true && graph.changeEndPressed === false) {
+            selectEnd();
+            deselectStart();
+            setForAllNodesGrabOrDefaultOrPointer('pointer');
+        } else if (graph.changeEndPressed === true) {
+            deselectEnd();
+            setForAllNodesGrabOrDefaultOrPointer('grab');
+        }
+    }
+}
+
+function selectStart() {
+    setStartButtonMode('stopSelecting', document.getElementById('changeStartNodeButton'));
+    graph.changeStartPressed = true;
+}
+
+function deselectStart() {
+    setStartButtonMode('change', document.getElementById('changeStartNodeButton'));
+    graph.changeStartPressed = false;
+}
+
+function selectEnd() {
+    setEndButtonMode('stopSelecting', document.getElementById('changeEndNodeButton'));
+    graph.changeEndPressed = true;
+}
+
+function deselectEnd() {
+    setEndButtonMode('change', document.getElementById('changeEndNodeButton'));
+    graph.changeEndPressed = false;
+}
+
+//we're just removing the opposite of mode here since there are only two modes
+
+function setStartButtonMode(mode, element) {
+    if (mode === 'change') {
+        element.textContent = 'Change Start Node';
+        element.classList.remove(`changeStartNodeButton-stopSelecting`);
+    } else {
+        element.textContent = 'Stop Selecting';
+        element.classList.remove(`changeStartNodeButton-change`);
+    }
+    element.classList.add(`changeStartNodeButton-${mode}`);
+}
+
+function setEndButtonMode(mode, element) {
+    if (mode === 'change') {
+        element.textContent = 'Change End Node';
+        element.classList.remove(`changeEndNodeButton-stopSelecting`);
+    } else {
+        element.textContent = 'Stop Selecting';
+        element.classList.remove(`changeEndNodeButton-change`);
+    }
+    element.classList.add(`changeEndNodeButton-${mode}`);
+}
 
 document.querySelector('#visualizeButton').addEventListener('click', handleVisualizeClick);
 const timeoutIds = new Set();
@@ -90,11 +169,11 @@ function clearBoard() {
     clearGrid(); //clear the board
 }
 
-function setForAllNodesGrabOrDefault (grabOrDefault) {
+function setForAllNodesGrabOrDefaultOrPointer (grabOrDefaultOrPointer) {
     Object.values(graph.nodes).forEach(node => {
-        node.setGrabOrDefault(grabOrDefault, document.getElementById(`${node.id}`));
+        node.setGrabOrDefaultOrPointer(grabOrDefaultOrPointer, document.getElementById(`${node.id}`));
     });
-    if (grabOrDefault === 'default') {
+    if (grabOrDefaultOrPointer === 'default') {
         graph.isVisualizing = true;
     } else {
         graph.isVisualizing = false;
@@ -125,7 +204,7 @@ function handleVisualizeClick() {
             alert("dfs not implemented yet, coming soon!");
         }
     } else if (visualizeButtonMode === 'stop') {
-        setForAllNodesGrabOrDefault('grab');
+        setForAllNodesGrabOrDefaultOrPointer('grab');
         setVisualizeButtonMode('visualize', document.getElementById('visualizeButton'));
         clearBoard();
     }
@@ -133,7 +212,7 @@ function handleVisualizeClick() {
 
 function runDijkstra(graph) {
     clearBoard();
-    setForAllNodesGrabOrDefault('default');
+    setForAllNodesGrabOrDefaultOrPointer('default');
     
     const visitedNodes = new Set();
     const priorityQueue = [];
@@ -186,7 +265,7 @@ function runDijkstra(graph) {
                 currentNode = prevNodes[currentNode];
             }
             timeoutIds.add(setTimeout(() => {
-                setForAllNodesGrabOrDefault('grab');
+                setForAllNodesGrabOrDefaultOrPointer('grab');
                 setVisualizeButtonMode('visualize', document.getElementById('visualizeButton'));
             }, delay));
             return;
@@ -208,7 +287,7 @@ function runDijkstra(graph) {
     }
 
     console.log("no path found");
-    setForAllNodesGrabOrDefault('grab');
+    setForAllNodesGrabOrDefaultOrPointer('grab');
     setVisualizeButtonMode('visualize', document.getElementById('visualizeButton'));
     return;
 }

@@ -13,9 +13,10 @@ export class Graph {
         this.svgHeight = null; //svg canvas height
         this.startNode = null; // specify the start node by ID
         this.endNode = null; //specify the end node by ID
-        this.startEndToggle = 0; //a toggle for the handleNodeClick function
         this.selectedAlgorithm = 'dijkstra'; //a variable to tell us which algorithm is selected in drop down menu
         this.isVisualizing = false;
+        this.changeStartPressed = false; //boolean to see if changeStartNodeButton is pressed
+        this.changeEndPressed = false; //boolean to see if changeEndNodeButton is pressed
 
         // Bind the dropdown event listener to update the algorithm
         this.setupAlgorithmSelector();
@@ -65,13 +66,17 @@ export class Graph {
             nodeCircle.setAttribute('r', 10); // Radius of the circle
 
             //set grab to node
-            node.setGrabOrDefault('grab', nodeCircle);
+            node.setGrabOrDefaultOrPointer('grab', nodeCircle);
+
+            // Add event listeners for selecting start and end node
+            nodeCircle.addEventListener('mouseover', this.handleMouseOver.bind(this, node));
+            nodeCircle.addEventListener('mouseout', this.handleMouseOut.bind(this, node));
+            nodeCircle.addEventListener('click', this.handleClick.bind(this, node));
 
             // Add event listeners for dragging
             nodeCircle.addEventListener('mousedown', this.handleMouseDown.bind(this, node));
             document.addEventListener('mouseup', this.handleMouseUp.bind(this));
             document.addEventListener('mousemove', this.handleMouseMove.bind(this));
-            // nodeCircle.addEventListener('click', this.handleNodeClick.bind(this));
 
             // Append the circle to the SVG
             // Append the circle to the nodes group (so it's on top of the edges)
@@ -124,64 +129,48 @@ export class Graph {
             line.setAttribute("y2", node2.y);
         }
     }
-    
-    // Handle click event
-    // handleNodeClick(event) {
-    //     const nodeId = event.target.id;
-    //     const node = this.nodes[nodeId];
-    //     const nodeElement = event.target;
+    //event listeners for selecting start and end nodes
+    // Handle mouse over event
+    handleMouseOver(node) {
+        if (this.changeStartPressed === true && node.type !== 'start' && node.type !== 'end') {
+            node.setType('hoverStart', document.getElementById(`${node.id}`));
+        } else if (this.changeEndPressed === true && node.type !== 'start' && node.type !== 'end') {
+            node.setType('hoverEnd', document.getElementById(`${node.id}`));
+        }
+    }
 
-    //     if (!this.startNode && !this.endNode) {
-    //         node.setType('start', nodeElement);
-    //         this.startNode = node;
-    //     } else if (this.startNode && !this.endNode) {
-    //         if (node.type !== 'start') {
-    //             node.setType('end', nodeElement);
-    //             this.endNode = node;
-    //         } else {
-    //             node.setType('regular', nodeElement);
-    //             this.startNode = null;
-    //         }
-    //     } else if (!this.startNode && this.endNode) {
-    //         if (node.type !== 'end') {
-    //             node.setType('start', nodeElement);
-    //             this.startNode = node;
-    //         } else {
-    //             node.setType('regular', nodeElement);
-    //             this.endNode = null;
-    //         }
-    //     } else {
-    //         if (node.type === 'start') {
-    //             node.setType('regular', nodeElement);
-    //             this.startNode = null;
-    //         } else if (node.type === 'end') {
-    //             node.setType('regular', nodeElement);
-    //             this.endNode = null;
-    //         } else {
-    //             if (this.startEndToggle === 0) {
-    //                 const previousStartNodeElement = document.getElementById(this.startNode.id);
-    //                 this.startNode.setType('regular', previousStartNodeElement);
-    //                 this.startNode = null;
-                    
-    //                 node.setType('start', nodeElement);
-    //                 this.startNode = node;
-    //                 this.startEndToggle = 1;
-    //             } else if (this.startEndToggle === 1) {
-    //                 const previousEndNodeElement = document.getElementById(this.endNode.id);
-    //                 this.endNode.setType('regular', previousEndNodeElement);
-    //                 this.endNode = null;
+    handleMouseOut(node) {
+        if (this.changeStartPressed === true && node.type !== 'start' && node.type !== 'end') {
+            node.setType('regular', document.getElementById(`${node.id}`));
+        } else if (this.changeEndPressed === true && node.type !== 'start' && node.type !== 'end') {
+            node.setType('regular', document.getElementById(`${node.id}`));
+        }
+    }
 
-    //                 node.setType('end', nodeElement);
-    //                 this.endNode = node;
-    //                 this.startEndToggle = 0;
-    //             }
-    //         }
-    //     }
-    // }
+    handleClick(node) {
+        if (this.changeStartPressed === true) {
+            this.startNode.setType('regular', document.getElementById(`${this.startNode.id}`));
+            node.setType('start', document.getElementById(`${node.id}`));
+            this.startNode = node;
+            this.changeStartPressed = false;
+            document.getElementById('changeStartNodeButton').classList.remove("changeStartNodeButton-stopSelecting");
+            document.getElementById('changeStartNodeButton').classList.add("changeStartNodeButton-change");
+            document.getElementById('changeStartNodeButton').textContent = 'Change Start Node';
+        } else if (this.changeEndPressed === true) {
+            this.endNode.setType('regular', document.getElementById(`${this.endNode.id}`));
+            node.setType('end', document.getElementById(`${node.id}`));
+            this.endNode = node;
+            this.changeEndPressed = false;
+            document.getElementById('changeEndNodeButton').classList.remove("changeEndNodeButton-stopSelecting");
+            document.getElementById('changeEndNodeButton').classList.add("changeEndNodeButton-change");
+            document.getElementById('changeEndNodeButton').textContent = 'Change End Node';
+        }
+    }
 
+    //event listeners for moving nodes
     // Handle mouse down event (start dragging)
     handleMouseDown(node, event) {
-        if (this.isVisualizing === false) {
+        if (this.isVisualizing === false && this.changeStartPressed === false && this.changeEndPressed === false) {
             node.isDragging = true;
             this.containerRect = this.svg.getBoundingClientRect(); // Get SVG container's bounding box
             this.svgWidth = document.getElementById('graphSvg').clientWidth;
@@ -191,7 +180,7 @@ export class Graph {
 
     // Handle mouse move event (dragging)
     handleMouseMove(event) {
-        if (this.isVisualizing === false) {
+        if (this.isVisualizing === false && this.changeStartPressed === false && this.changeEndPressed === false) {
             Object.values(this.nodes).forEach(node => {
                 if (node.isDragging) {
                     const mouseX = event.clientX - this.containerRect.left;
@@ -228,7 +217,7 @@ export class Graph {
 
     // Handle mouse up event (stop dragging)
     handleMouseUp() {
-        if (this.isVisualizing === false) {
+        if (this.isVisualizing === false && this.changeStartPressed === false && this.changeEndPressed === false) {
             Object.values(this.nodes).forEach(node => {
                 node.isDragging = false; // Stop dragging
             });

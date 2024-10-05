@@ -7,14 +7,25 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
-        <button id="visualizeButton" class="visualizeButton-visualize"> Visualize </button>
-
-        <select id="algorithmSelect">
-            <option value="dijkstra" selected>Dijkstra's Algorithm</option>
-            <option value="astar">A* Algorithm</option>
-            <option value="bfs">Breadth-First Search</option>
-            <option value="dfs">Depth-First Search</option>
-        </select>
+        <div id="entireTopBar">
+            <div id="visualizeButtonAndAlgorithmSelector">
+                <button id="visualizeButton" class="visualizeButton-visualize">Visualize</button>
+                <select id="algorithmSelect">
+                    <option value="dijkstra" selected>Dijkstra's Algorithm</option>
+                    <option value="astar">A* Algorithm</option>
+                    <option value="bfs">Breadth-First Search</option>
+                    <option value="dfs">Depth-First Search</option>
+                </select>
+            </div>
+            <div id="startNodeEndNodePicker">
+                <button id="changeStartNodeButton" class="changeStartNodeButton-change">Change Start Node</button>
+                <button id="changeEndNodeButton" class="changeEndNodeButton-change">Change End Node</button>
+                <svg id="startNodeEndNodePickerSvg">
+                    <circle class="node-start" cx="30" cy="25" r="10"></circle>
+                    <circle class="node-end" cx="30" cy="60" r="10"></circle>
+                </svg>
+            </div>
+        </div>
 
         <!-- SVG container for edges and nodes -->
         <svg id="graphSvg">

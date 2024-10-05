@@ -1,37 +1,3 @@
-.visualizeButton-stop{
-    background-color: black;
-    margin: 1% 1% 0.1% 1%;
-    padding: 0;
-    width: 150px;
-    height: 55px;
-    font-size: 20px;
-    border-radius: 10px;
-    color: rgb(220, 172, 255);
-    border: 3px solid black;
-    font-weight: bold;
-    transition: background-color 0.3s cubic-bezier(0, 1, 0.29, 1);
-}
-
-.visualizeButton-visualize {
-    background-color: rgb(240, 240, 240);
-    margin: 1% 1% 0.1% 1%;
-    padding: 0;
-    width: 150px;
-    height: 55px;
-    font-size: 20px;
-    border-radius: 10px;
-    color: rgb(220, 172, 255);
-    border: 3px solid black;
-    font-weight: bold;
-    transition: background-color 0.3s cubic-bezier(0, 1, 0.29, 1);
-}
-
-#algorithmSelect {
-    margin: 0% 1% 1% 1%;
-    padding: 0.25% 0.08%; 
-    border-radius: 6px;
-    background-color: rgb(240, 240, 240);
-}
 
 line {
     stroke: black;          /* Line color */
@@ -44,6 +10,10 @@ line {
 
 .default {
     cursor: default;
+}
+
+.pointer {
+    cursor: pointer;
 }
 
 /* Style for the regular nodes (SVG <circle>) */
@@ -78,6 +48,18 @@ line {
     stroke-width: 3;
 }
 
+.node-hoverStart {
+    fill: rgb(104, 206, 147);
+    stroke: black;
+    stroke-width: 3;
+}
+
+.node-hoverEnd {
+    fill: rgb(210, 95, 96);
+    stroke: black;
+    stroke-width: 3;
+}
+
 /* Position the SVG behind the nodes */
 #graphSvg {
     display: block;
@@ -92,5 +74,118 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    margin: 10px;
+    margin: 10px 10px 10px 10px;
+}
+
+.visualizeButton-stop{
+    background-color: black;
+    margin: 1% 1% 0.1% 1%;
+    padding: 0;
+    width: 150px;
+    height: 55px;
+    font-size: 20px;
+    border-radius: 10px;
+    color: rgb(220, 172, 255);
+    border: 3px solid black;
+    font-weight: bold;
+    transition: background-color 0.3s cubic-bezier(0, 1, 0.29, 1);
+}
+
+.visualizeButton-visualize {
+    background-color: rgb(240, 240, 240);
+    margin: 2% 2% 0% 2%;
+    padding: 0;
+    width: 150px;
+    height: 55px;
+    font-size: 20px;
+    border-radius: 10px;
+    color: rgb(220, 172, 255);
+    border: 3px solid black;
+    font-weight: bold;
+    transition: background-color 0.3s cubic-bezier(0, 1, 0.29, 1);
+}
+
+#algorithmSelect {
+    margin: 2% 2% 8% 2%;
+    padding: 0.25% 0.08%; 
+    border-radius: 6px;
+    background-color: rgb(240, 240, 240);
+}
+
+#visualizeButtonAndAlgorithmSelector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#startNodeEndNodePicker {
+    position: relative;
+}
+
+#startNodeEndNodePickerSvg {
+    height: 100%;
+    width: 200px;
+}
+
+.changeStartNodeButton-stopSelecting {
+    background-color: black;
+    width: 155px;
+    height: 30px;
+    font-size: 15px;
+    border-radius: 10px;
+    color: rgb(220, 172, 255);
+    border: 3px solid black;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    left: 50px;
+}
+
+.changeStartNodeButton-change {
+    background-color: rgb(240, 240, 240);
+    width: 155px;
+    height: 30px;
+    font-size: 15px;
+    border-radius: 10px;
+    color: rgb(220, 172, 255);
+    border: 3px solid black;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    left: 50px;
+}
+
+.changeEndNodeButton-stopSelecting {
+    background-color: black;
+    width: 155px;
+    height: 30px;
+    font-size: 15px;
+    border-radius: 10px;
+    color: rgb(220, 172, 255);
+    border: 3px solid black;
+    font-weight: bold;
+    position: absolute;
+    top: 45px;
+    left: 50px;
+}
+
+.changeEndNodeButton-change {
+    background-color: rgb(240, 240, 240);
+    width: 155px;
+    height: 30px;
+    font-size: 15px;
+    border-radius: 10px;
+    color: rgb(220, 172, 255);
+    border: 3px solid black;
+    font-weight: bold;
+    position: absolute;
+    top: 45px;
+    left: 50px;
+}
+
+#entireTopBar{
+    display: flex;
+    justify-content: center;  /* Centers the flex items horizontally */
+    gap: 20px;
+    height: 100px;
 }

@@ -5,7 +5,7 @@ export class Node {
         this.x = x;   // X-coordinate on the screen
         this.y = y;   // Y-coordinate on the screen
         this.type = 'regular'; // type of the node
-        this.grabOrDefault = 'grab';
+        this.grabOrDefaultOrPointer = 'grab';
     }
 
     // Get the distance to another node
@@ -30,9 +30,9 @@ export class Node {
         element.classList.add(`node-${newType}`);
     }
 
-    setGrabOrDefault(grabOrDefault, element) {
-        element.classList.remove(`${this.grabOrDefault}`);
-        this.grabOrDefault = grabOrDefault;
-        element.classList.add(`${grabOrDefault}`);
+    setGrabOrDefaultOrPointer(grabOrDefaultOrPointer, element) {
+        element.classList.remove(`${this.grabOrDefaultOrPointer}`);
+        this.grabOrDefaultOrPointer = grabOrDefaultOrPointer;
+        element.classList.add(`${grabOrDefaultOrPointer}`);
     }
 }
